@@ -1,0 +1,4 @@
+#
+# Processor declaration
+#
+org.jboss.flicc.processor.Processor
