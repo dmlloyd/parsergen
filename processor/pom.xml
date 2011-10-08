@@ -41,6 +41,7 @@
             <groupId>org.jboss.flicc</groupId>
             <artifactId>flicc</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
