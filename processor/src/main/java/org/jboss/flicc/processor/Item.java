@@ -20,16 +20,45 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc.generator;
+package org.jboss.flicc.processor;
 
 /**
+ * An item key for a position in a sequence.
+ *
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public final class Literal extends Symbol {
-    private final String literal;
+public final class Item {
+    private final SymbolSeq sequence;
+    private final int idx;
+    private final int hashCode;
 
-    public Literal(final String name, final String literal) {
-        super(name);
-        this.literal = literal;
+    public Item(final SymbolSeq sequence, final int idx) {
+        this.sequence = sequence;
+        this.idx = idx;
+        hashCode = sequence.hashCode() ^ idx;
+    }
+
+    /**
+     * Determine whether this object is equal to another.
+     *
+     * @param other the other object
+     * @return {@code true} if they are equal, {@code false} otherwise
+     */
+    public boolean equals(Object other) {
+        return other instanceof Item && equals((Item)other);
+    }
+
+    /**
+     * Determine whether this object is equal to another.
+     *
+     * @param other the other object
+     * @return {@code true} if they are equal, {@code false} otherwise
+     */
+    public boolean equals(Item other) {
+        return this == other || other != null && idx == other.idx && sequence.equals(other.sequence);
+    }
+
+    public int hashCode() {
+        return hashCode;
     }
 }

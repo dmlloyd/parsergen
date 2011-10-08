@@ -20,18 +20,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc.generator;
+package org.jboss.flicc.processor;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.lang.model.element.ExecutableElement;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public final class RuleSet extends Symbol {
-    private final Map<SymbolSeq, Rule> rules = new HashMap<SymbolSeq, Rule>();
+public interface GrammarBuilder {
 
-    public RuleSet(final String name) {
-        super(name);
-    }
+    void addRule(String result, ExecutableElement ruleMethod);
+
+
+    Grammar create();
 }

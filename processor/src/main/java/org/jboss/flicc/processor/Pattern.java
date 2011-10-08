@@ -20,17 +20,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc.generator;
-
-import javax.lang.model.element.ExecutableElement;
+package org.jboss.flicc.processor;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public interface GrammarBuilder {
+public final class Pattern extends Symbol {
+    private final String pattern;
 
-    void addRule(String result, ExecutableElement ruleMethod);
-
-
-    Grammar create();
+    public Pattern(final String name, final String pattern) {
+        super(name);
+        this.pattern = pattern;
+    }
 }

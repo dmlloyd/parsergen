@@ -20,16 +20,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc.generator;
+package org.jboss.flicc.processor.lr0;
+
+import org.jboss.flicc.processor.Generator;
+import org.jboss.flicc.processor.Grammar;
+import org.jboss.flicc.processor.IntMap;
+import org.jboss.flicc.processor.Symbol;
+
+import javax.annotation.processing.ProcessingEnvironment;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public final class Pattern extends Symbol {
-    private final String pattern;
+public final class Lr0Generator implements Generator {
 
-    public Pattern(final String name, final String pattern) {
-        super(name);
-        this.pattern = pattern;
+    public void generate(final Grammar grammar, final ProcessingEnvironment env) {
+        int tid = 0, nid = 0;
+        final IntMap<Symbol> terminals = new IntMap<Symbol>();
+        final IntMap<Nonterminal> nonterminals = new IntMap<Nonterminal>();
+        for (Symbol terminal : grammar.getInputs()) {
+            terminals.put(terminal, tid++);
+        }
+        for (Nonterminal nonterminal : grammar.getProducedBy().keySet()) {
+            nonterminals.put(nonterminal, nid++);
+        }
     }
 }

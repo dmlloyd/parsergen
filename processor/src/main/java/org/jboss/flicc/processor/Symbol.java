@@ -20,49 +20,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc.generator;
-
-import java.util.Arrays;
+package org.jboss.flicc.processor;
 
 /**
- * A sequence of symbols.
- *
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public final class SymbolSeq {
-    private final String[] symbols;
-    private final int hashCode;
+public abstract class Symbol {
+    private final String name;
 
-    public SymbolSeq(final String... symbols) {
-        this.symbols = symbols;
-        hashCode = Arrays.hashCode(symbols);
-    }
-
-    public String[] getSymbols() {
-        return symbols;
-    }
-
-    /**
-     * Determine whether this object is equal to another.
-     *
-     * @param other the other object
-     * @return {@code true} if they are equal, {@code false} otherwise
-     */
-    public boolean equals(Object other) {
-        return other instanceof SymbolSeq && equals((SymbolSeq)other);
-    }
-
-    /**
-     * Determine whether this object is equal to another.
-     *
-     * @param other the other object
-     * @return {@code true} if they are equal, {@code false} otherwise
-     */
-    public boolean equals(SymbolSeq other) {
-        return this == other || other != null && hashCode == other.hashCode && Arrays.equals(symbols, other.symbols);
-    }
-
-    public int hashCode() {
-        return hashCode;
+    protected Symbol(final String name) {
+        this.name = name;
     }
 }

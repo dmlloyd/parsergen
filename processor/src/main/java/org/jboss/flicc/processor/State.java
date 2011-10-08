@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc.generator;
+package org.jboss.flicc.processor;
 
 import java.util.HashMap;
 import java.util.Map;

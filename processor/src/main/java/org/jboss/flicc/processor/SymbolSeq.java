@@ -20,29 +20,49 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc.generator.lr0;
+package org.jboss.flicc.processor;
 
-import org.jboss.flicc.generator.Generator;
-import org.jboss.flicc.generator.Grammar;
-import org.jboss.flicc.generator.IntMap;
-import org.jboss.flicc.generator.Symbol;
-
-import javax.annotation.processing.ProcessingEnvironment;
+import java.util.Arrays;
 
 /**
+ * A sequence of symbols.
+ *
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public final class Lr0Generator implements Generator {
+public final class SymbolSeq {
+    private final String[] symbols;
+    private final int hashCode;
 
-    public void generate(final Grammar grammar, final ProcessingEnvironment env) {
-        int tid = 0, nid = 0;
-        final IntMap<Symbol> terminals = new IntMap<Symbol>();
-        final IntMap<Nonterminal> nonterminals = new IntMap<Nonterminal>();
-        for (Symbol terminal : grammar.getInputs()) {
-            terminals.put(terminal, tid++);
-        }
-        for (Nonterminal nonterminal : grammar.getProducedBy().keySet()) {
-            nonterminals.put(nonterminal, nid++);
-        }
+    public SymbolSeq(final String... symbols) {
+        this.symbols = symbols;
+        hashCode = Arrays.hashCode(symbols);
+    }
+
+    public String[] getSymbols() {
+        return symbols;
+    }
+
+    /**
+     * Determine whether this object is equal to another.
+     *
+     * @param other the other object
+     * @return {@code true} if they are equal, {@code false} otherwise
+     */
+    public boolean equals(Object other) {
+        return other instanceof SymbolSeq && equals((SymbolSeq)other);
+    }
+
+    /**
+     * Determine whether this object is equal to another.
+     *
+     * @param other the other object
+     * @return {@code true} if they are equal, {@code false} otherwise
+     */
+    public boolean equals(SymbolSeq other) {
+        return this == other || other != null && hashCode == other.hashCode && Arrays.equals(symbols, other.symbols);
+    }
+
+    public int hashCode() {
+        return hashCode;
     }
 }
