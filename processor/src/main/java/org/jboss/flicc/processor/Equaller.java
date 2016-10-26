@@ -20,49 +20,52 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc;
+package org.jboss.flicc.processor;
+
+import java.io.Serializable;
 
 /**
+ * An equals-comparator.
+ *
+ * @param <T> the type to compare
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public interface Parser {
+interface Equaller<T> {
 
     /**
-     * Replace the current state with the given state.
+     * Determine whether the given object can be compared with this equaller.
      *
-     * @param state the new state
+     * @param obj the object
+     * @return {@code true} if it can be compared, {@code false} otherwise
      */
-    void gotoState(int state);
+    boolean accepts(Object obj);
 
     /**
-     * Push the given state on to the state stack.
+     * Test the two objects for equality.
      *
-     * @param state the new state
+     * @param obj the object to compare
+     * @param other the other object
+     * @return {@code true} if they are equivalent, {@code false} otherwise
      */
-    void pushState(int state);
+    boolean equals(T obj, T other);
 
-    /**
-     * Remove the current state.
-     *
-     * @return the state which was removed
-     */
-    int popState();
-
-    void pushInputSource(Source source);
-
-    void appendInputSource(Source source);
-
-    int getLine();
-
-    int getColumn();
-
-    void setLine();
-
-    void setColumn();
-
-    String getSourceName();
-
-    void setSourceName(String name);
-
-    Location getLocation();
+    Equaller<Object> DEFAULT = new DefaultHasher();
 }
+
+class DefaultEqualler implements Equaller<Object>, Serializable {
+
+    private static final long serialVersionUID = -5237758393814640207L;
+
+    public boolean accepts(final Object obj) {
+        return true;
+    }
+
+    public boolean equals(final Object obj, final Object other) {
+        return obj == null ? other == null : obj.equals(other);
+    }
+
+    protected Object readResolve() {
+        return Equaller.DEFAULT;
+    }
+}
+

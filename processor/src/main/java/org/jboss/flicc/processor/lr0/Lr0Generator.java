@@ -22,6 +22,8 @@
 
 package org.jboss.flicc.processor.lr0;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.jboss.flicc.processor.Generator;
 import org.jboss.flicc.processor.Grammar;
 import org.jboss.flicc.processor.IntMap;
@@ -35,6 +37,9 @@ import javax.annotation.processing.ProcessingEnvironment;
 public final class Lr0Generator implements Generator {
 
     public void generate(final Grammar grammar, final ProcessingEnvironment env) {
+        List<State> states = new ArrayList<>();
+        
+
         int tid = 0, nid = 0;
         final IntMap<Symbol> terminals = new IntMap<Symbol>();
         final IntMap<Nonterminal> nonterminals = new IntMap<Nonterminal>();

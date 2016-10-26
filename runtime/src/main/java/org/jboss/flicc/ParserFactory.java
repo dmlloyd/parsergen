@@ -22,47 +22,18 @@
 
 package org.jboss.flicc;
 
+import java.io.File;
+import java.io.Reader;
+
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public interface Parser {
+public interface ParserFactory {
+    Parser createParser(Source initialSource, ErrorHandler errorHandler);
 
-    /**
-     * Replace the current state with the given state.
-     *
-     * @param state the new state
-     */
-    void gotoState(int state);
+    Parser createParser(Reader initialSource, ErrorHandler errorHandler);
 
-    /**
-     * Push the given state on to the state stack.
-     *
-     * @param state the new state
-     */
-    void pushState(int state);
+    Parser createParser(File initialSource, ErrorHandler errorHandler);
 
-    /**
-     * Remove the current state.
-     *
-     * @return the state which was removed
-     */
-    int popState();
 
-    void pushInputSource(Source source);
-
-    void appendInputSource(Source source);
-
-    int getLine();
-
-    int getColumn();
-
-    void setLine();
-
-    void setColumn();
-
-    String getSourceName();
-
-    void setSourceName(String name);
-
-    Location getLocation();
 }

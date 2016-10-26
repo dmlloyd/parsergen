@@ -20,49 +20,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc;
+package org.jboss.flicc.processor.lr0;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public interface Parser {
-
-    /**
-     * Replace the current state with the given state.
-     *
-     * @param state the new state
-     */
-    void gotoState(int state);
-
-    /**
-     * Push the given state on to the state stack.
-     *
-     * @param state the new state
-     */
-    void pushState(int state);
-
-    /**
-     * Remove the current state.
-     *
-     * @return the state which was removed
-     */
-    int popState();
-
-    void pushInputSource(Source source);
-
-    void appendInputSource(Source source);
-
-    int getLine();
-
-    int getColumn();
-
-    void setLine();
-
-    void setColumn();
-
-    String getSourceName();
-
-    void setSourceName(String name);
-
-    Location getLocation();
+final class ReduceAction {
 }

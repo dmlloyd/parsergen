@@ -88,7 +88,7 @@ public final class Processor implements javax.annotation.processing.Processor {
             return;
         }
         final int lr = lrAnnotation.value();
-        final Flicc.$$ goalAnnotation = element.getAnnotation(Flicc.$$.class);
+        final Flicc.__ goalAnnotation = element.getAnnotation(Flicc.__.class);
         if (goalAnnotation == null) {
             processingEnv.getMessager().printMessage(ERROR, "Missing @_() (goal) annotation", element);
             return;
@@ -112,14 +112,14 @@ public final class Processor implements javax.annotation.processing.Processor {
                         continue;
                     }
                 }
-                final Flicc.$$ resultAnnotation = executableElement.getAnnotation(Flicc.$$.class);
+                final Flicc.__ resultAnnotation = executableElement.getAnnotation(Flicc.__.class);
                 String result = resultAnnotation == null ? null : resultAnnotation.value();
-                final Flicc.$P patternAnnotation = executableElement.getAnnotation(Flicc.$P.class);
-                final Flicc.$L literalAnnotation = executableElement.getAnnotation(Flicc.$L.class);
-                final Flicc.$S stateAnnotation = executableElement.getAnnotation(Flicc.$S.class);
-                final Flicc.$R ruleAnnotation = executableElement.getAnnotation(Flicc.$R.class);
-                final Flicc.$X antiStateAnnotation = executableElement.getAnnotation(Flicc.$X.class);
-                final Flicc.$A associativityAnnotation = executableElement.getAnnotation(Flicc.$A.class);
+                final Flicc.Pattern patternAnnotation = executableElement.getAnnotation(Flicc.Pattern.class);
+                final Flicc.Literal literalAnnotation = executableElement.getAnnotation(Flicc.Literal.class);
+                final Flicc.IncludeState stateAnnotation = executableElement.getAnnotation(Flicc.IncludeState.class);
+                final Flicc.Rule ruleAnnotation = executableElement.getAnnotation(Flicc.Rule.class);
+                final Flicc.ExcludeState antiStateAnnotation = executableElement.getAnnotation(Flicc.ExcludeState.class);
+                final Flicc.Assoc associativityAnnotation = executableElement.getAnnotation(Flicc.Assoc.class);
                 if (ruleAnnotation != null) {
                     // Definitely a rule
                     if (patternAnnotation != null) {

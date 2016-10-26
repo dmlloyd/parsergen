@@ -22,6 +22,7 @@
 
 package org.jboss.flicc.processor;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,31 @@ import java.util.Map;
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
 public final class State {
+
+    static final Indexer<GotoCondition, GotoCondition> INDEXER = new Indexer<GotoCondition, GotoCondition>() {
+        public boolean accepts(final Object obj) {
+            return obj instanceof GotoCondition;
+        }
+
+        public GotoCondition getKey(final GotoCondition value) {
+            return value;
+        }
+    };
+
+    static final Hasher<GotoCondition> HASHER = new Hasher<GotoCondition>() {
+        public int hashCode(final GotoCondition obj) {
+            return Arrays.hashCode(obj.terminals) * 13 + obj.nonterminal;
+        }
+
+        public boolean accepts(final Object obj) {
+            return obj instanceof GotoCondition;
+        }
+
+        public boolean equals(final GotoCondition obj, final GotoCondition other) {
+            return obj.nonterminal == other.nonterminal && Arrays.equals(obj.terminals, other.terminals);
+        }
+    };
+
     private final int id;
     // map of actions to take: shift, reduce, or error if missing
     // sequence can only contain terminals
@@ -39,12 +65,53 @@ public final class State {
     // A mapping of all possible terminal sequences which produce a given action.
     // Map<Action, List<SymbolSeq>> actions = ...
 
-    public State(final int id) {
+    // key = terminal
+    private final Action[] actions;
+    private final IndexMap<GotoCondition, GotoCondition> gotoConditions = new IndexHashMap<GotoCondition, GotoCondition>(INDEXER, HASHER, Equaller.DEFAULT);
+
+    /**
+     *
+     * @param id the identifier of this state
+     * @param cnt the # of possible terminal symbols
+     */
+    public State(final int id, final int cnt) {
         this.id = id;
+        actions = new Action[cnt];
     }
 
     public int getId() {
         return id;
+    }
+
+    public static class GotoCondition {
+        private final int nonterminal;
+        private final int[] terminals;
+        private final int targetState;
+
+        /**
+         * Construct a new instance.
+         *
+         * @param nonterminal the nonterminal to match
+         * @param terminals the sequence of lookahead terminals which satisfy the condition
+         * @param targetState the target state
+         */
+        public GotoCondition(final int nonterminal, final int[] terminals, final int targetState) {
+            this.nonterminal = nonterminal;
+            this.terminals = terminals;
+            this.targetState = targetState;
+        }
+
+        public int hashCode() {
+            return (Arrays.hashCode(terminals) * 13 + nonterminal) * 13 + targetState;
+        }
+
+        public boolean equals(final Object obj) {
+            return obj instanceof GotoCondition && equals((GotoCondition) obj);
+        }
+
+        public boolean equals(final GotoCondition obj) {
+            return this == obj || obj != null && nonterminal == obj.nonterminal && targetState == obj.targetState && Arrays.equals(terminals, obj.terminals);
+        }
     }
 
     public abstract static class Action {

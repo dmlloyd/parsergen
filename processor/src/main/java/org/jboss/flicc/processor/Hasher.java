@@ -20,49 +20,42 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc;
+package org.jboss.flicc.processor;
+
+import java.io.Serializable;
 
 /**
+ * @param <T> the upper bound of the type type of the key
+ *
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public interface Parser {
+interface Hasher<T> extends Equaller<T> {
 
     /**
-     * Replace the current state with the given state.
+     * Return the hash code of the given object.
      *
-     * @param state the new state
+     * @param obj the object
+     * @return the object's hash code
      */
-    void gotoState(int state);
+    int hashCode(T obj);
 
     /**
-     * Push the given state on to the state stack.
-     *
-     * @param state the new state
+     * A hasher which uses the standard {@code equals/hashCode} hashing mechanism.
      */
-    void pushState(int state);
+    Hasher<Object> DEFAULT = new DefaultHasher();
 
-    /**
-     * Remove the current state.
-     *
-     * @return the state which was removed
-     */
-    int popState();
-
-    void pushInputSource(Source source);
-
-    void appendInputSource(Source source);
-
-    int getLine();
-
-    int getColumn();
-
-    void setLine();
-
-    void setColumn();
-
-    String getSourceName();
-
-    void setSourceName(String name);
-
-    Location getLocation();
 }
+
+final class DefaultHasher extends DefaultEqualler implements Hasher<Object>, Serializable {
+
+    private static final long serialVersionUID = 1382908942098071506L;
+
+    public int hashCode(final Object obj) {
+        return obj.hashCode();
+    }
+
+    protected Object readResolve() {
+        return Hasher.DEFAULT;
+    }
+}
+

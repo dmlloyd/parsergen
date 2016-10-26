@@ -77,6 +77,45 @@ public class ParseException extends RuntimeException {
         this.location = location;
     }
 
+    /**
+     * Constructs a {@code ParseException} with no detail message. The cause is not initialized, and may subsequently be
+     * initialized by a call to {@link #initCause(Throwable) initCause}.
+     */
+    public ParseException() {
+        this((Location)null);
+    }
+
+    /**
+     * Constructs a {@code ParseException} with the specified detail message. The cause is not initialized, and may
+     * subsequently be initialized by a call to {@link #initCause(Throwable) initCause}.
+     *
+     * @param msg the detail message
+     */
+    public ParseException(final String msg) {
+        this(msg, (Location) null);
+    }
+
+    /**
+     * Constructs a {@code ParseException} with the specified cause. The detail message is set to:
+     * <pre>(cause == null ? null : cause.toString())</pre>
+     * (which typically contains the class and detail message of {@code cause}).
+     *
+     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method)
+     */
+    public ParseException(final Throwable cause) {
+        this(cause, (Location) null);
+    }
+
+    /**
+     * Constructs a {@code ParseException} with the specified detail message and cause.
+     *
+     * @param msg the detail message
+     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method)
+     */
+    public ParseException(final String msg, final Throwable cause) {
+        this(msg, cause, (Location) null);
+    }
+
     public Location getLocation() {
         return location;
     }

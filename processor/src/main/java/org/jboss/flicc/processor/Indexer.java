@@ -20,49 +20,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.flicc;
+package org.jboss.flicc.processor;
 
 /**
+ * An indexer for extracting a key from a value.
+ *
+ * @param <K> the key type
+ * @param <V> the value type
+ *
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public interface Parser {
+interface Indexer<K, V> {
+    /**
+     * Determine whether the given object can be indexed with this indexer.
+     *
+     * @param obj the object
+     * @return {@code true} if it can be indexed, {@code false} otherwise
+     */
+    boolean accepts(Object obj);
 
     /**
-     * Replace the current state with the given state.
+     * Get the key for a value.
      *
-     * @param state the new state
+     * @param value the value
+     * @return the key
      */
-    void gotoState(int state);
-
-    /**
-     * Push the given state on to the state stack.
-     *
-     * @param state the new state
-     */
-    void pushState(int state);
-
-    /**
-     * Remove the current state.
-     *
-     * @return the state which was removed
-     */
-    int popState();
-
-    void pushInputSource(Source source);
-
-    void appendInputSource(Source source);
-
-    int getLine();
-
-    int getColumn();
-
-    void setLine();
-
-    void setColumn();
-
-    String getSourceName();
-
-    void setSourceName(String name);
-
-    Location getLocation();
+    K getKey(V value);
 }

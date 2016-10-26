@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -22,7 +22,9 @@
 
 package org.jboss.flicc.example;
 
-import org.jboss.flicc.Scanner;
+import java.io.IOException;
+import java.io.Reader;
+import org.jboss.flicc.Flicc;
 
 import static org.jboss.flicc.Flicc.*;
 
@@ -31,78 +33,87 @@ import static org.jboss.flicc.Flicc.*;
  */
 @SuppressWarnings("JavaDoc")
 @LR(0)
-@$$("Program")
-public final class ExampleGrammar {
+public abstract class ExampleGrammar {
     // states
+    @State
     private static final int INITIAL = 0;
+    @State
     private static final int COMMENT = 1;
 
-    @$P("[ \t\r\f]") @$S(INITIAL)
-    public void ignoreWS() {}
+    @Line
+    protected int line;
+    @File
+    protected String fileName;
 
-    @$L("/*") @$S(INITIAL)
-    public void startComment(Scanner scanner) {
-        scanner.pushState(COMMENT);
+    @Pop
+    protected abstract void popState();
+
+    @Push
+    protected abstract void pushState(int state);
+
+    @Start
+    public abstract void start(String fileName, Reader reader);
+
+    @Parse("Program")
+    public abstract void parse() throws IOException;
+
+    @Pattern("[ \t\r\f]") @IncludeState(INITIAL)
+    protected abstract void ignoreWS();
+
+    @Flicc.Literal("/*") @IncludeState(INITIAL)
+    protected void startComment() {
+        pushState(COMMENT);
     }
 
-    @$P(".") @$S(COMMENT)
-    public void ignoreComments() {}
+    @Pattern(".") @IncludeState(COMMENT)
+    protected abstract void ignoreComments();
 
-    @$L("*/") @$S(COMMENT)
-    public void endComment(Scanner scanner) {
-        scanner.popState();
+    @Flicc.Literal("*/") @IncludeState(COMMENT)
+    protected void endComment() {
+        popState();
     }
 
-    @$L("*") @$A(LEFT) @$S(INITIAL)
-    public void and() {
-    }
+    @Flicc.Literal("*") @Assoc(LEFT) @IncludeState(INITIAL)
+    protected abstract void and();
 
-    @$L("+") @$A(LEFT) @$S(INITIAL)
-    public void or() {
-    }
+    @Flicc.Literal("+") @Assoc(LEFT) @IncludeState(INITIAL)
+    protected abstract void or();
 
-    @$P(".") @$S(INITIAL)
-    public void invalidChar(Scanner scanner) {
+    @Pattern(".") @IncludeState(INITIAL)
+    protected void invalidChar() {
         // report error
     }
 
-    @$$("\n") @$S(INITIAL)
-    public void eol() {}
+    @Flicc.Literal("\n") @IncludeState(INITIAL)
+    protected abstract void eol();
 
-    @$$("Literal") @$P("[01]")
-    public Literal literal(@$0 char text) {
+    @__("Literal") @Pattern("[01]")
+    protected Literal literal(@$0 char text) {
         return Literal.valueOf(text == '1');
     }
 
-    @$$("Expr") @$R("Literal")
-    public Expr literalExpr(@$1 Literal literal) {
-        return literal;
-    }
+    @__("Expr") @Rule("Literal")
+    protected abstract Literal literalExpr(@$1 Literal literal);
 
-    @$$("Expr") @$R("Expr * Literal")
-    public Expr andExpr(@$1 Expr left, @$3 Literal right) {
-        return new AndExpr(left, right);
-    }
+    @__("Expr") @Rule("Expr * Literal")
+    protected abstract AndExpr andExpr(@$1 Expr left, @$3 Literal right);
 
-    @$$("Expr") @$R("Expr + Literal")
-    public Expr orExpr(@$1 Expr left, @$3 Literal right) {
-        return new OrExpr(left, right);
-    }
+    @__("Expr") @Rule("Expr + Literal")
+    protected abstract OrExpr orExpr(@$1 Expr left, @$3 Literal right);
 
-    @$$("Line") @$R("\n")
-    public void emptyLine() {}
+    @__("Line") @Rule("\n")
+    protected abstract void emptyLine();
 
-    @$$("Line") @$R("Expr \n")
-    public void exprLine(@$1 Expr expr) {
+    @__("Line") @Rule("Expr \n")
+    protected void exprLine(@$1 Expr expr) {
         System.out.println("The answer is: " + expr.getValue());
     }
 
-    @$$("Program") @$R("Program Line")
-    public void program1() {
-    }
+    @__("Program") @Rule("Program Line")
+    protected abstract void program1();
 
-    @$$("Program") @$R("")
-    public void program2() {
+    @__("Program") @Rule("")
+    protected void program2() {
         System.out.println("No input!");
     }
 }

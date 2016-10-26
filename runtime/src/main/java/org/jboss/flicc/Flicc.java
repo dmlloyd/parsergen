@@ -26,6 +26,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
@@ -38,52 +39,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  */
 public final class Flicc {
 
-    private Flicc() {
-    }
-
-    /**
-     * Get a parser instance.  Returned instances are not thread-safe.
-     *
-     * @param type the type upon which the parser annotations were specified
-     * @param handler the parse handler instance
-     * @param <T> the parser type
-     * @return the parser instance
-     */
-    public static <T> Parser getParser(Class<T> type, T handler) {
-        if (type == null) {
-            throw new IllegalArgumentException("type is null");
-        }
-        if (handler == null) {
-            throw new IllegalArgumentException("handler is null");
-        }
-        try {
-            return Class.forName(type.getName() + "$$flicc_generated", true, type.getClassLoader()).asSubclass(Parser.class).getConstructor(type).newInstance(handler);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to construct parser " + type + " with handler " + handler, e);
-        }
-    }
-
-    /**
-     * Get a scanner instance.  Returned instances are not thread-safe.
-     *
-     * @param type the type upon which the scanner annotations were specified
-     * @param handler the scanner handler instance
-     * @param <T> the scanner type
-     * @return the scanner instance
-     */
-    public static <T> Scanner getScanner(Class<T> type, T handler) {
-        if (type == null) {
-            throw new IllegalArgumentException("type is null");
-        }
-        if (handler == null) {
-            throw new IllegalArgumentException("handler is null");
-        }
-        try {
-            return Class.forName(type.getName() + "$$flicc_generated", true, type.getClassLoader()).asSubclass(Scanner.class).getConstructor(type).newInstance(handler);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to construct parser " + type + " with handler " + handler, e);
-        }
-    }
+    private Flicc() {}
 
     /**
      * A positional parameter indicator annotation.
@@ -107,80 +63,70 @@ public final class Flicc {
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $0 {
-    }
+    public @interface $0 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 1.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $1 {
-    }
+    public @interface $1 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 2.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $2 {
-    }
+    public @interface $2 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 3.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $3 {
-    }
+    public @interface $3 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 4.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $4 {
-    }
+    public @interface $4 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 5.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $5 {
-    }
+    public @interface $5 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 6.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $6 {
-    }
+    public @interface $6 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 7.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $7 {
-    }
+    public @interface $7 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 8.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $8 {
-    }
+    public @interface $8 {}
 
     /**
      * A shorthand positional parameter indicator annotation for position 9.
      */
     @Retention(SOURCE)
     @Target(PARAMETER)
-    public @interface $9 {
-    }
+    public @interface $9 {}
 
     /**
      * Define the precedence of a terminal symbol or rule in terms of another terminal symbol.
@@ -202,15 +148,14 @@ public final class Flicc {
      */
     @Retention(SOURCE)
     @Target(METHOD)
-    public @interface EOF {
-    }
+    public @interface EOF {}
 
     /**
      * A literal string to match.  If no result type is specified, the literal string itself is used.
      */
     @Retention(SOURCE)
     @Target(METHOD)
-    public @interface $L {
+    public @interface Literal {
 
         /**
          * The literal string.
@@ -225,7 +170,7 @@ public final class Flicc {
      */
     @Retention(SOURCE)
     @Target(METHOD)
-    public @interface $P {
+    public @interface Pattern {
 
         /**
          * The pattern string.
@@ -240,7 +185,7 @@ public final class Flicc {
      */
     @Retention(SOURCE)
     @Target(METHOD)
-    public @interface $R {
+    public @interface Rule {
 
         /**
          * The space-separated list of symbols which this rule accepts.
@@ -251,11 +196,75 @@ public final class Flicc {
     }
 
     /**
+     * Declare a constant field to be a scanner state value.
+     */
+    @Retention(SOURCE)
+    @Target(FIELD)
+    public @interface State {}
+
+    /**
+     * Declare a instance field of type {@code int} to contain the current line number.
+     */
+    @Retention(SOURCE)
+    @Target(FIELD)
+    public @interface Line {}
+
+    /**
+     * Declare a instance field of type {@code int} to contain the current column number.
+     */
+    @Retention(SOURCE)
+    @Target(FIELD)
+    public @interface Column {}
+
+    /**
+     * Declare a instance field of type {@code String} to contain the current file name.
+     */
+    @Retention(SOURCE)
+    @Target(FIELD)
+    public @interface File {}
+
+    /**
+     * Declare an abstract method to be a start method.  The following parameters are supported (the names must match
+     * exactly):
+     * <ul>
+     *   <li>{@code String fileName} or {@code File file} - declare a file name to start processing of</li>
+     *   <li>{@code InputString stream} or {@code Reader reader} - declare a stream to start processing</li>
+     *   <li>{@code int line} - specify the line number to set</li>
+     * </ul>
+     */
+    @Retention(SOURCE)
+    @Target(METHOD)
+    public @interface Start {}
+
+    @Retention(SOURCE)
+    @Target(METHOD)
+    public @interface Push {}
+
+    @Retention(SOURCE)
+    @Target(METHOD)
+    public @interface Pop {}
+
+    /**
+     * Declare the parse method.  Attach to an abstract method which returns the given result of the given accept rule.
+     */
+    @Retention(SOURCE)
+    @Target(METHOD)
+    public @interface Parse {
+
+        /**
+         * The name of the accept rule.
+         *
+         * @return the name of the accept rule
+         */
+        String value();
+    }
+
+    /**
      * Define the states in which a pattern is valid.
      */
     @Retention(SOURCE)
     @Target(METHOD)
-    public @interface $S {
+    public @interface IncludeState {
 
         /**
          * The states in which this pattern is valid.
@@ -270,7 +279,7 @@ public final class Flicc {
      */
     @Retention(SOURCE)
     @Target(METHOD)
-    public @interface $X {
+    public @interface ExcludeState {
 
         /**
          * The states in which this pattern is <b>not</b> valid.
@@ -281,12 +290,12 @@ public final class Flicc {
     }
 
     /**
-     * The result of this rule, pattern, or grammar.
+     * The result of this rule or pattern.
      */
     @Retention(SOURCE)
-    @Target({METHOD, TYPE})
+    @Target(METHOD)
     @Inherited
-    public @interface $$ {
+    public @interface __ {
 
         /**
          * The result string which should be a token or non-terminal name.
@@ -299,7 +308,7 @@ public final class Flicc {
     /**
      * Define associativity of a terminal symbol as a binary operator.
      */
-    public @interface $A {
+    public @interface Assoc {
 
         /**
          * The associativity type.
